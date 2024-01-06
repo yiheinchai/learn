@@ -38,12 +38,12 @@ type Split<S, TIncludeTrailingSlash = true> = S extends unknown
       : never
   : never
 
-type TestSplit<S> = S extends `${infer T}/`
-      ? [...Split<T>, '/']
+type SimpleSplit<S> = S extends `${infer T}/`
+      ? [...SimpleSplit<T>, '/']
       : S extends `/${infer U}`
-        ? Split<U>
+        ? SimpleSplit<U>
         : S extends `${infer T}/${infer U}`
-          ? [...Split<T>, ...Split<U>]
+          ? [...SimpleSplit<T>, ...SimpleSplit<U>]
           : [S]
 
 
@@ -51,10 +51,10 @@ function split(S) {
   return (S.slice(-1) == '/'
       ? [...split(S.slice(0, -1)), '/']
       : S.slice(0, 1) == '/'
-          ? split(S.slice(1))
-          : 0 < S.indexOf('/') && S.indexOf('/') < S.length - 1
-              ? [...split(S.slice(0, S.indexOf('/'))), ...split(S.slice(S.indexOf('/')))]
-              : [S]
+        ? split(S.slice(1))
+        : 0 < S.indexOf('/') && S.indexOf('/') < S.length - 1
+          ? [...split(S.slice(0, S.indexOf('/'))), ...split(S.slice(S.indexOf('/')))]
+          : [S]
     )
 }
     
@@ -89,7 +89,7 @@ function ifFlatsplit(S) {
 
 split('/1/2/3/4/5/')
 
-type Test = TestSplit<'/1/2/3/4/'>
+type Test = SimpleSplit<'/1/2/3/4/'>
 
 
 
