@@ -14,6 +14,8 @@ type CleanPath<T extends string> = T extends `${infer L}//${infer R}`
       ? `/${CleanPath<L>}`
       : T
 
+
+
 type Split<S, TIncludeTrailingSlash = true> = S extends unknown
   ? string extends S
     ? string[]
@@ -35,6 +37,61 @@ type Split<S, TIncludeTrailingSlash = true> = S extends unknown
               : never
       : never
   : never
+
+type TestSplit<S> = S extends `${infer T}/`
+      ? [...Split<T>, '/']
+      : S extends `/${infer U}`
+        ? Split<U>
+        : S extends `${infer T}/${infer U}`
+          ? [...Split<T>, ...Split<U>]
+          : [S]
+
+
+function split(S) {
+  return (S.slice(-1) == '/'
+      ? [...split(S.slice(0, -1)), '/']
+      : S.slice(0, 1) == '/'
+          ? split(S.slice(1))
+          : 0 < S.indexOf('/') && S.indexOf('/') < S.length - 1
+              ? [...split(S.slice(0, S.indexOf('/'))), ...split(S.slice(S.indexOf('/')))]
+              : [S]
+    )
+}
+    
+function ifNestedsplit(S) {
+    if (S.slice(-1) == '/') {
+        return [...ifNestedsplit(S.slice(0, -1)), '/']
+    } else {
+        if (S.slice(0, 1) == '/') {
+            return ifNestedsplit(S.slice(1))
+        } else {
+            if (0 < S.indexOf('/') && S.indexOf('/') < S.length - 1) {
+                return [...ifNestedsplit(S.slice(0, S.indexOf('/'))), ...ifNestedsplit(S.slice(S.indexOf('/')))]
+            } else {
+                return [S]
+            }
+        }
+    }
+}
+    
+function ifFlatsplit(S) {
+    if (S.slice(-1) == '/') {
+        return [...ifFlatsplit(S.slice(0, -1)), '/']
+    } else if (S.slice(0, 1) == '/') {
+        return ifFlatsplit(S.slice(1))
+    } else if (0 < S.indexOf('/') && S.indexOf('/') < S.length - 1) {
+        return [...ifFlatsplit(S.slice(0, S.indexOf('/'))), ...ifFlatsplit(S.slice(S.indexOf('/')))]
+    } else {
+        return [S]
+    }
+}
+    
+
+split('/1/2/3/4/5/')
+
+type Test = TestSplit<'/1/2/3/4/'>
+
+
 
 type ResolveRelativePath<TFrom, TTo = '.'> = TFrom extends string
   ? TTo extends string
