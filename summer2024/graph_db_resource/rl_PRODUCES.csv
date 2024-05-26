@@ -1,0 +1,6 @@
+ID,Origin_ID,Origin_Labels,Destination_ID,Destination_Labels,gene:str
+0089efffc07bafea,HIV-1,Species,FLKEKGGL,Epitope,Nef
+e12a01bdcbb984da,HIV-1,Species,KRWIILGLNK,Epitope,Gag
+3164d6b326724e33,HomoSapiens,Species,cb090694dab101ce,Tcr,
+509d3c0697cd71b9,HomoSapiens,Species,8e307e7d9a4da3a4,Tcr,
+c39c4dbbc5bd7f03,HomoSapiens,Species,dda24ec6d13c5aaf,Tcr,

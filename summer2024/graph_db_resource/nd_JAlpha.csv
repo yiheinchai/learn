@@ -1,0 +1,3 @@
+ID,gene:str,allele:int
+TRAJ43*01,TRAJ43,1
+TRAJ6*01,TRAJ6,1

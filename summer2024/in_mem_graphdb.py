@@ -1,3 +1,9 @@
+from typing import TypeVar, List, Generic, Type
+import os
+import pandas as pd
+
+T = TypeVar("T")
+
 SCHEMA = {
     "Tcr": {},
     "Tra": {},
@@ -21,7 +27,6 @@ SCHEMA = {
     "Epitope": {},
     "Species": {},
 }
-
 fake = [
     {"node_label": "VAlpha", "id": 3},
     {"node_label": "JAlpha", "id": 4},
@@ -67,17 +72,17 @@ class Relationships:
 class Node:
     def __init__(self, **kwargs) -> None:
         self.rels: Relationships[Node] = Relationships()
-        self.node_type = self.__class__.__name__
+        self.node_label = self.__class__.__name__
         for k, v in kwargs.items():
             setattr(self, k, v)
 
     def __repr__(self) -> str:
         props = {
-            k: v for k, v in self.__dict__.items() if k not in ["node_type", "rels"]
+            k: v for k, v in self.__dict__.items() if k not in ["node_label", "rels"]
         }
         prop_str = " ".join([f"{k}='{v}'" for k, v in props.items()])
 
-        return f"<{self.node_type} {prop_str}>"
+        return f"<{self.node_label} {prop_str}>"
 
 
 def class_factory(baseclass, name):
@@ -106,6 +111,11 @@ class QuerySet:
         nodes = [getattr(node.rels, __name, None) for node in self.query_set]
         nodes_cleaned = [node for node in nodes if node]
         self.query_set = nodes_cleaned
+        return self
+
+    def where(self, **kwargs):
+        for k, v in kwargs.items():
+            self.query_set = [node for node in self.query_set if getattr(node, k) == v]
         return self
 
     def __repr__(self) -> str:
@@ -147,10 +157,24 @@ class GraphDB:
 
 db = GraphDB(available_classes)
 
-for node in fake_data:
-    db.create(node['node_label'], node)
+rsc_dir = "graph_db_resource"
+files_to_load = os.listdir(rsc_dir)
+node_files = [file for file in files_to_load if file.startswith("nd")]
+rel_files = [file for file in files_to_load if file.startswith("rl")]
 
-db.create_rel(1, 2)
-db.create_rel(0,3)
-db.nodes[0].rels.Tra.rels.Tcr
-db.query('Tcr').to('Tra').to('Tcr')
+for file in node_files:
+    df = pd.read_csv(os.path.join(rsc_dir, file))
+    df.columns = df.columns.str.lower()
+    node_label = file.split("_")[1].split(".")[0]
+    for index, row in df.iterrows():
+        db.create(node_label, row.to_dict())
+
+for file in rel_files:
+    df = pd.read_csv(os.path.join(rsc_dir, file))
+    df.columns = df.columns.str.lower()
+    for index, row in df.iterrows():
+        db.create_rel(row["origin_id"], row["destination_id"])
+
+db.query("VAlpha").where(id="TRAV14/DV4*01").to("Tra").to("Tcr").to("Annotation").to(
+    "PMhc"
+).to("Epitope").to("Species")

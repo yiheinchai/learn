@@ -1,0 +1,7 @@
+ID,Origin_ID,Origin_Labels,Destination_ID,Destination_Labels
+11625aba9e5ba3b9,10xGenomics/005/PBMC,Repertoire,10xGenomics/005,Repertoire
+0b1f5b5a244d2c0e,PMID:15596521/065/PBMC,Repertoire,PMID:15596521/065,Repertoire
+5ceecf12cfe8b44b,PMID:21135165/LTS5/PBMC,Repertoire,PMID:21135165/LTS5,Repertoire
+09d9a61f769e82c0,PMID:15596521,Study,VDJdb,Database
+a91d470b3ee9e8f3,10xGenomics,Study,VDJdb,Database
+17585aa51b93a1d1,PMID:21135165,Study,VDJdb,Database

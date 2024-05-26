@@ -1,0 +1,3 @@
+ID,gene:str,allele:int
+TRAV14/DV4*01,TRAV14/DV4,1
+TRAV26-1*01,TRAV26-1,1

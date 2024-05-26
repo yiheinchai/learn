@@ -1,0 +1,4 @@
+ID,Origin_ID,Origin_Labels,Destination_ID,Destination_Labels,vdjdb_score:int,assays_used:[str],cell_subsets:[str]
+e44a259412a856d5,10xGenomics,Study,08f4fed2d46ff76f,Annotation,2,"antigen-loaded-targets,tetramer-sort",CD8+
+66e093b0eb1da143,PMID:15596521,Study,bc2cb63f52acf90f,Annotation,2,"antigen-loaded-targets,tetramer-sort",CD8+
+ba660af26b5649af,PMID:21135165,Study,293983456ecc5399,Annotation,1,tetramer-sort,CD8+
